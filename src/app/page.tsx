@@ -63,60 +63,62 @@ const HomePage = () => {
             <Header />
             
             {/* Hero Section */}
-            <section className="relative bg-cover bg-center py-16" style={{ 
-                backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url("/images/university-bg.jpg")'
-            }}>
-                <div className="container mx-auto px-4">
-                    <div className="text-center mb-12">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                            Find your scholarship with ScholarMatch
-                        </h1>
-                        <p className="text-lg text-gray-600">
-                            Discover thousands of opportunities worldwide!
-                        </p>
-                    </div>
+            <section className="mx-4 md:mx-8 lg:mx-12">
+                <div className="relative bg-cover bg-center rounded-none py-16" style={{ 
+                    backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), url("/images/university.jpg")'
+                }}>
+                    <div className="container mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                                Find your scholarship with ScholarMatch
+                            </h1>
+                            <p className="text-lg text-gray-600">
+                                Discover thousands of opportunities worldwide!
+                            </p>
+                        </div>
 
-                    <div className="max-w-4xl mx-auto">
-                        <div className="bg-white rounded-full shadow-md flex items-center p-2">
-                            <div className="flex-1 flex space-x-2">
-                                <div className="flex-1">
-                                    <select className="w-full px-4 py-2 text-gray-600 bg-transparent border-none focus:ring-0">
-                                        <option value="">Select Level</option>
-                                        <option>Undergraduate</option>
-                                        <option>Master's</option>
-                                        <option>PhD</option>
-                                    </select>
+                        <div className="max-w-4xl mx-auto">
+                            <div className="bg-white rounded-full shadow-md flex items-center p-2">
+                                <div className="flex-1 flex space-x-2">
+                                    <div className="flex-1">
+                                        <select className="w-full px-4 py-2 text-gray-600 bg-transparent border-none focus:ring-0">
+                                            <option value="">Select Level</option>
+                                            <option>Undergraduate</option>
+                                            <option>Master's</option>
+                                            <option>PhD</option>
+                                        </select>
+                                    </div>
+                                    <div className="w-px bg-gray-200"></div>
+                                    <div className="flex-1">
+                                        <select className="w-full px-4 py-2 text-gray-600 bg-transparent border-none focus:ring-0">
+                                            <option value="">Select Country</option>
+                                            <option>United States</option>
+                                            <option>United Kingdom</option>
+                                            <option>Canada</option>
+                                        </select>
+                                    </div>
+                                    <div className="w-px bg-gray-200"></div>
+                                    <div className="flex-1">
+                                        <select className="w-full px-4 py-2 text-gray-600 bg-transparent border-none focus:ring-0">
+                                            <option value="">Select Field</option>
+                                            <option>Engineering</option>
+                                            <option>Business</option>
+                                            <option>Medicine</option>
+                                        </select>
+                                    </div>
+                                    <div className="w-px bg-gray-200"></div>
+                                    <div className="flex-1">
+                                        <input 
+                                            type="date" 
+                                            placeholder="Select date" 
+                                            className="w-full px-4 py-2 text-gray-600 bg-transparent border-none focus:ring-0"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="w-px bg-gray-200"></div>
-                                <div className="flex-1">
-                                    <select className="w-full px-4 py-2 text-gray-600 bg-transparent border-none focus:ring-0">
-                                        <option value="">Select Country</option>
-                                        <option>United States</option>
-                                        <option>United Kingdom</option>
-                                        <option>Canada</option>
-                                    </select>
-                                </div>
-                                <div className="w-px bg-gray-200"></div>
-                                <div className="flex-1">
-                                    <select className="w-full px-4 py-2 text-gray-600 bg-transparent border-none focus:ring-0">
-                                        <option value="">Select Field</option>
-                                        <option>Engineering</option>
-                                        <option>Business</option>
-                                        <option>Medicine</option>
-                                    </select>
-                                </div>
-                                <div className="w-px bg-gray-200"></div>
-                                <div className="flex-1">
-                                    <input 
-                                        type="date" 
-                                        placeholder="Select date" 
-                                        className="w-full px-4 py-2 text-gray-600 bg-transparent border-none focus:ring-0"
-                                    />
-                                </div>
+                                <button className="bg-yellow-400 text-gray-900 rounded-full px-8 py-2 font-medium hover:bg-yellow-500 transition-colors ml-2">
+                                    <ArrowRightIcon className="h-5 w-5" />
+                                </button>
                             </div>
-                            <button className="bg-yellow-400 text-gray-900 rounded-full px-8 py-2 font-medium hover:bg-yellow-500 transition-colors ml-2">
-                                <ArrowRightIcon className="h-5 w-5" />
-                            </button>
                         </div>
                     </div>
                 </div>
