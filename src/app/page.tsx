@@ -1,6 +1,5 @@
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import Button from '../components/ui/Button';
+import HomeSearchFilter from '../components/HomeSearchFilter';
 import { 
   AcademicCapIcon, 
   MagnifyingGlassIcon, 
@@ -56,14 +55,11 @@ const HomePage = () => {
             content: 'The AI recommendations were spot-on. I got matched with scholarships I never would have found on my own.',
             rating: 5
         }
-    ];
-
-    return (
-        <div className="flex flex-col min-h-screen">
-            <Header />
+    ];    return (
+        <div>
               {/* Hero Section */}
             <section className="relative z-0 mx-4 md:mx-8 lg:mx-12">
-                <div className="relative bg-cover bg-center rounded-lg py-16" style={{ 
+                <div className="relative bg-cover bg-center rounded-none py-16" style={{ 
                     backgroundImage: 'url("/images/university.jpg")'
                 }}>
                     <div className="container mx-auto px-4">
@@ -76,53 +72,10 @@ const HomePage = () => {
                             </p>
                         </div>
                     </div>
-                </div>
-                  {/* Filter section - positioned to overlap the hero image */}
+                </div>                {/* Filter section - positioned to overlap the hero image */}
                 <div className="relative z-10 -mt-12 max-w-4xl mx-auto px-4">
-                    <div className="bg-[#E8EEF7] rounded-full shadow-md flex items-center">
-                        <div className="flex-1 grid grid-cols-4 divide-x divide-gray-200">
-                            <div className="px-6 py-3">
-                                <div className="text-sm font-medium text-gray-700 mb-1">Level</div>
-                                <select className="w-full bg-transparent text-gray-500 border-none focus:ring-0 text-sm py-1">
-                                    <option value="">Select Level</option>
-                                    <option>Undergraduate</option>
-                                    <option>Master's</option>
-                                    <option>PhD</option>
-                                </select>
-                            </div>
-                            <div className="px-6 py-3">
-                                <div className="text-sm font-medium text-gray-700 mb-1">Country</div>
-                                <select className="w-full bg-transparent text-gray-500 border-none focus:ring-0 text-sm py-1">
-                                    <option value="">Select Country</option>
-                                    <option>United States</option>
-                                    <option>United Kingdom</option>
-                                    <option>Canada</option>
-                                </select>
-                            </div>
-                            <div className="px-6 py-3">
-                                <div className="text-sm font-medium text-gray-700 mb-1">Field</div>
-                                <select className="w-full bg-transparent text-gray-500 border-none focus:ring-0 text-sm py-1">
-                                    <option value="">Select field</option>
-                                    <option>Engineering</option>
-                                    <option>Business</option>
-                                    <option>Medicine</option>
-                                </select>
-                            </div>
-                            <div className="px-6 py-3">
-                                <div className="text-sm font-medium text-gray-700 mb-1">Deadline</div>
-                                <input 
-                                    type="text" 
-                                    placeholder="Select date"
-                                    className="w-full bg-transparent text-gray-500 border-none focus:ring-0 text-sm py-1"
-                                />
-                            </div>
-                        </div>
-                        <div className="px-2">
-                            <button className="bg-[#FFE814] hover:bg-[#FFE200] text-black rounded-full h-12 w-12 flex items-center justify-center transition-colors">
-                                <ArrowRightIcon className="h-5 w-5" />
-                            </button>
-                        </div>
-                    </div>
+                    {/* Using the HomeSearchFilter component which handles the navigation */}
+                    <HomeSearchFilter />
                 </div>
             </section>
 
@@ -315,11 +268,8 @@ const HomePage = () => {
                         >
                             Browse Scholarships
                         </Button>
-                    </div>
-                </div>
+                    </div>                </div>
             </section>
-
-            <Footer />
         </div>
     );
 };
