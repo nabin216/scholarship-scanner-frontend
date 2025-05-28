@@ -1,9 +1,8 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js",
-  "/search/filtered/page": "app/search/filtered/page.js",
+  "/scholarships/scholarshipdetails/page": "app/scholarships/scholarshipdetails/page.js",
   "/scholarships/search/page": "app/scholarships/search/page.js",
+  "/search/filtered/page": "app/search/filtered/page.js",
   "/Authentication/login/page": "app/Authentication/login/page.js",
-  "/Authentication/register/page": "app/Authentication/register/page.js",
   "/profile/page": "app/profile/page.js"
 }
