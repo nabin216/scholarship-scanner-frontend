@@ -5,19 +5,20 @@ import Link from 'next/link';
 
 interface Application {
   id: number;
-  scholarship_id: number;
+  scholarship: number;
   scholarship_title: string;
-  provider: string;
-  status: 'pending' | 'approved' | 'rejected';
-  applied_date: string;
-  amount: number;
+  scholarship_provider: string;
+  scholarship_amount: number;
+  status: 'pending' | 'submitted' | 'under_review' | 'approved' | 'rejected';
+  date_applied: string;
+  last_updated: string;
+  notes: string;
 }
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchApplications = async () => {
       setLoading(true);
@@ -29,7 +30,7 @@ export default function ApplicationsPage() {
         
         const response = await fetch('http://localhost:8000/api/user/applications/', {
           headers: {
-            'Authorization': `Token ${token}`,
+            'Authorization': `Bearer ${token}`,
           }
         });
         
@@ -38,12 +39,11 @@ export default function ApplicationsPage() {
         }
         
         const data = await response.json();
-        setApplications(data);
+        setApplications(data.results || data || []);
       } catch (err) {
         console.error('Error fetching applications:', err);
         setError(err instanceof Error ? err.message : 'An error occurred while fetching applications');
-        // Use sample data for display purposes
-        setApplications(sampleApplications);
+        setApplications([]); // Show empty state instead of demo data
       } finally {
         setLoading(false);
       }
@@ -51,62 +51,24 @@ export default function ApplicationsPage() {
     
     fetchApplications();
   }, []);
-
-  // Sample data for visual display
-  const sampleApplications = [
-    {
-      id: 1,
-      scholarship_id: 101,
-      scholarship_title: "International Student Scholarship",
-      provider: "University of Example",
-      status: 'pending',
-      applied_date: "2025-05-15",
-      amount: 5000
-    },
-    {
-      id: 2,
-      scholarship_id: 102,
-      scholarship_title: "Engineering Excellence Award",
-      provider: "Technical Institute",
-      status: 'approved',
-      applied_date: "2025-04-28",
-      amount: 7500
-    },
-    {
-      id: 3,
-      scholarship_id: 103,
-      scholarship_title: "Research Grant Program",
-      provider: "National Science Foundation",
-      status: 'rejected',
-      applied_date: "2025-03-12",
-      amount: 10000
-    },
-    {
-      id: 4,
-      scholarship_id: 104,
-      scholarship_title: "Community Service Scholarship",
-      provider: "Local Community Foundation",
-      status: 'pending',
-      applied_date: "2025-05-20",
-      amount: 3000
-    },
-    {
-      id: 5,
-      scholarship_id: 105,
-      scholarship_title: "Diversity in Technology Scholarship",
-      provider: "Tech for All Initiative",
-      status: 'approved',
-      applied_date: "2025-05-05",
-      amount: 6000
-    }
-  ] as Application[];
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
         return (
           <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
             Pending
+          </span>
+        );
+      case 'submitted':
+        return (
+          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+            Submitted
+          </span>
+        );
+      case 'under_review':
+        return (
+          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+            Under Review
           </span>
         );
       case 'approved':
@@ -144,10 +106,26 @@ export default function ApplicationsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">My Applications</h1>
-          <p className="text-gray-600 mt-2">Track the status of your scholarship applications</p>
+      <div className="container mx-auto px-4">        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center space-x-4 mb-2">
+                <Link href="/profile" className="text-blue-600 hover:text-blue-800 flex items-center">
+                  <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Back to Profile
+                </Link>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-800">My Applications</h1>
+              <p className="text-gray-600 mt-2">Track the status of your scholarship applications</p>
+              {applications.length > 0 && (
+                <p className="text-sm text-gray-500 mt-1">
+                  {applications.length} application{applications.length !== 1 ? 's' : ''} submitted
+                </p>
+              )}
+            </div>
+          </div>
         </div>
         
         {error && (
@@ -181,8 +159,7 @@ export default function ApplicationsPage() {
                       Actions
                     </th>
                   </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                </thead>                <tbody className="bg-white divide-y divide-gray-200">
                   {applications.map((application) => (
                     <tr key={application.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
@@ -191,14 +168,14 @@ export default function ApplicationsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500">{application.provider}</div>
+                        <div className="text-sm text-gray-500">{application.scholarship_provider}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">${application.amount.toLocaleString()}</div>
+                        <div className="text-sm text-gray-900">${application.scholarship_amount?.toLocaleString() || 'N/A'}</div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-500">
-                          {new Date(application.applied_date).toLocaleDateString()}
+                          {new Date(application.date_applied).toLocaleDateString()}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -206,7 +183,7 @@ export default function ApplicationsPage() {
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
                         <Link 
-                          href={`/scholarships/scholarshipdetails?id=${application.scholarship_id}`} 
+                          href={`/scholarships/scholarshipdetails?id=${application.scholarship}`} 
                           className="text-blue-600 hover:text-blue-900"
                         >
                           View Scholarship

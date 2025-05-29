@@ -1,14 +1,9 @@
 {
   "pages": {
-    "/profile/page": [
+    "/search/filtered/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/profile/page.js"
-    ],
-    "/profile/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/profile/layout.js"
+      "static/chunks/app/search/filtered/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -16,10 +11,15 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/profile/saved/page": [
+    "/scholarships/search/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/profile/saved/page.js"
+      "static/chunks/app/scholarships/search/page.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
     ],
     "/Authentication/login/page": [
       "static/chunks/webpack.js",
@@ -31,15 +31,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/Authentication/layout.js"
     ],
-    "/page": [
+    "/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/profile/page.js"
     ],
-    "/_not-found/page": [
+    "/profile/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/profile/layout.js"
+    ],
+    "/profile/saved/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/profile/saved/page.js"
+    ],
+    "/profile/applications/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/profile/applications/page.js"
     ]
   }
 }

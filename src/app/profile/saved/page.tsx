@@ -68,8 +68,7 @@ export default function SavedScholarshipsPage() {
     };
     
     fetchSavedScholarships();
-  }, []);
-  const handleRemove = async (scholarshipId: number) => {
+  }, []);  const handleRemove = async (scholarshipId: number) => {
     try {
       setError(null);
       setSuccessMessage(null);
@@ -97,6 +96,57 @@ export default function SavedScholarshipsPage() {
       console.error('Error removing scholarship:', err);
       setError(err instanceof Error ? err.message : 'An error occurred while removing the scholarship');
     }  };
+
+  const handleMarkAsApplied = async (savedScholarship: SavedScholarship) => {
+    try {
+      setError(null);
+      setSuccessMessage(null);
+      
+      const token = localStorage.getItem('authToken');
+      if (!token) throw new Error('Authentication token not found');
+
+      // Create application
+      const applicationResponse = await fetch('http://localhost:8000/api/user/applications/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          scholarship: savedScholarship.scholarship_details.id,
+          status: 'pending',
+          notes: 'Applied from saved scholarships'
+        }),
+      });
+
+      if (!applicationResponse.ok) {
+        const errorData = await applicationResponse.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Failed to create application');
+      }
+
+      // Remove from saved scholarships
+      const removeResponse = await fetch(`http://localhost:8000/api/user/saved-scholarships/${savedScholarship.id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (!removeResponse.ok) {
+        throw new Error('Failed to remove from saved scholarships');
+      }
+      
+      // Remove from state
+      setSavedScholarships(prev => prev.filter(item => item.id !== savedScholarship.id));
+      setSuccessMessage('Scholarship marked as applied and moved to applications!');
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err) {
+      console.error('Error marking scholarship as applied:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred while marking the scholarship as applied');
+    }
+  };
 
   if (loading) {
     return (
@@ -156,16 +206,12 @@ export default function SavedScholarshipsPage() {
           {savedScholarships.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
+                <thead className="bg-gray-50">                  <tr>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Scholarship
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Provider
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Deadline
@@ -181,11 +227,10 @@ export default function SavedScholarshipsPage() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {savedScholarships.map((item) => {
                     const scholarshipDetails = item.scholarship_details;
-                    
-                    if (!scholarshipDetails) {
+                      if (!scholarshipDetails) {
                       return (
                         <tr key={item.id} className="hover:bg-gray-50">
-                          <td colSpan={6} className="px-6 py-4 text-center text-red-600">
+                          <td colSpan={5} className="px-6 py-4 text-center text-red-600">
                             Error: Missing scholarship details
                           </td>
                         </tr>
@@ -197,8 +242,7 @@ export default function SavedScholarshipsPage() {
                       (1000 * 60 * 60 * 24)
                     );
                     
-                    return (
-                      <tr key={item.id} className="hover:bg-gray-50">
+                    return (                      <tr key={item.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4">
                           <div className="text-sm font-medium text-gray-900">
                             <Link 
@@ -214,9 +258,6 @@ export default function SavedScholarshipsPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="text-sm text-gray-500">{scholarshipDetails.provider}</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900">${scholarshipDetails.amount}</div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="text-sm text-gray-900">
@@ -238,10 +279,11 @@ export default function SavedScholarshipsPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <div className="flex justify-center space-x-3">
+                          <div className="flex justify-center space-x-2">
                             <Link 
                               href={`/scholarships/scholarshipdetails?id=${scholarshipDetails.id}`}
-                              className="text-blue-600 hover:text-blue-900"
+                              className="text-blue-600 hover:text-blue-900 p-1"
+                              title="View Details"
                             >
                               <span className="sr-only">View</span>
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -250,8 +292,19 @@ export default function SavedScholarshipsPage() {
                               </svg>
                             </Link>
                             <button
+                              onClick={() => handleMarkAsApplied(item)}
+                              className="text-green-600 hover:text-green-900 p-1"
+                              title="Mark as Applied"
+                            >
+                              <span className="sr-only">Mark as Applied</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            </button>
+                            <button
                               onClick={() => handleRemove(item.id)}
-                              className="text-red-600 hover:text-red-900"
+                              className="text-red-600 hover:text-red-900 p-1"
+                              title="Remove"
                             >
                               <span className="sr-only">Remove</span>
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
