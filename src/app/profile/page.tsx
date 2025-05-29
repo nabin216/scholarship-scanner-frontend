@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Authentication/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Select from 'react-select';
 import countryList from 'country-list';
 
@@ -24,12 +25,27 @@ interface CountryOption {
   label: string;
 }
 
-interface SaveList {
+interface SavedScholarship {
   id: number;
-  name: string;
-  description: string;
-  scholarship_count: number;
-  last_updated: string;
+  scholarship: number;
+  scholarship_details: {
+    id: number;
+    title: string;
+    description: string;
+    deadline: string;
+    open_date?: string;
+    image?: string;
+    is_featured: boolean;
+    application_url?: string;
+    country?: string;
+    sponsor_types: string[];
+    fund_types: string[];
+    levels: string[];
+    fields_of_study: string[];
+    categories: string[];
+    language_requirements: string[];
+  };
+  date_saved: string;
 }
 
 const countryOptions: CountryOption[] = countryList.getData().map((country: { code: string; name: string }) => ({
@@ -55,33 +71,9 @@ const ProfilePage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);  const [message, setMessage] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [saveLists, setSaveLists] = useState<SaveList[]>([]);
+  const [savedScholarships, setSavedScholarships] = useState<SavedScholarship[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
-  
-  // Load user data when component mounts  // Sample data for save lists
-  const sampleSaveLists = [
-    {
-      id: 1,
-      name: "Priority Scholarships",
-      description: "Your highest priority scholarships to apply for",
-      scholarship_count: 5,
-      last_updated: "2025-05-28"
-    },
-    {
-      id: 2,
-      name: "International Students",
-      description: "Scholarships available for international students",
-      scholarship_count: 3,
-      last_updated: "2025-05-29"
-    },
-    {
-      id: 3,
-      name: "STEM Related",
-      description: "Science, Technology, Engineering and Math scholarships",
-      scholarship_count: 7,
-      last_updated: "2025-05-26"
-    }
-  ];
+  const [loadingSaved, setLoadingSaved] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -94,8 +86,8 @@ const ProfilePage = () => {
       // Fetch additional user profile data
       fetchUserProfile();
       
-      // Set sample save lists data
-      setSaveLists(sampleSaveLists);
+      // Fetch saved scholarships
+      fetchSavedScholarships();
     }
   }, [user]);
   
@@ -128,12 +120,37 @@ const ProfilePage = () => {
           country: profileData.country || '',
           date_of_birth: profileData.date_of_birth ? profileData.date_of_birth.substring(0, 10) : '',
         }));
-      }
-    } catch (error) {
+      }    } catch (error) {
       console.error('Error fetching profile:', error);
     }
   };
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+
+  const fetchSavedScholarships = async () => {
+    setLoadingSaved(true);
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+
+      const response = await fetch('http://localhost:8000/api/user/saved-scholarships/', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSavedScholarships(data);
+      } else {
+        console.error('Failed to fetch saved scholarships:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching saved scholarships:', error);
+    } finally {
+      setLoadingSaved(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
@@ -227,36 +244,32 @@ const ProfilePage = () => {
     } finally {
       setIsSaving(false);
     }
-  };
-  const handleDeleteSaveList = async (listId: number) => {
-    if (window.confirm('Are you sure you want to delete this list?')) {
+  };  const handleDeleteSavedScholarship = async (savedScholarshipId: number) => {
+    if (window.confirm('Are you sure you want to remove this scholarship from your saved list?')) {
       setIsDeleting(true);
       setError(null);
       setMessage(null);
       
       try {
-        // In a real app, you would send a request to delete the list
-        // For now, just update state
-        setSaveLists(prev => prev.filter(list => list.id !== listId));
-        setMessage('List deleted successfully');
+        const token = localStorage.getItem('authToken');
+        if (!token) throw new Error('Authentication token not found');
         
-        // In a real app with API:
-        // const token = localStorage.getItem('authToken');
-        // if (!token) throw new Error('Authentication token not found');
-        // 
-        // const response = await fetch(`http://localhost:8000/api/user/savelists/${listId}/`, {
-        //   method: 'DELETE',
-        //   headers: {
-        //     'Authorization': `Bearer ${token}`,
-        //   }
-        // });
-        // 
-        // if (!response.ok) {
-        //   throw new Error('Failed to delete list');
-        // }
+        const response = await fetch(`http://localhost:8000/api/user/saved-scholarships/${savedScholarshipId}/`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        
+        if (response.ok) {
+          setSavedScholarships(prev => prev.filter(item => item.id !== savedScholarshipId));
+          setMessage('Scholarship removed from saved list successfully');
+        } else {
+          throw new Error('Failed to remove scholarship from saved list');
+        }
         
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while deleting the list');
+        setError(err instanceof Error ? err.message : 'An error occurred while removing the scholarship');
       } finally {
         setIsDeleting(false);
       }
@@ -411,7 +424,7 @@ const ProfilePage = () => {
                 }`}
                 onClick={() => setActiveTab('saved')}
               >
-                My Saved Lists
+                My Saved Scholarships
               </button>
             </li>
             <li className="mr-2">
@@ -749,58 +762,92 @@ const ProfilePage = () => {
               </div>
             </form>
           </div>
-        )}
-          {/* Save Lists Tab */}
+        )}        {/* Saved Scholarships Tab */}
         {activeTab === 'saved' && (
           <div className="bg-white shadow-md rounded-lg p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">My Saved Lists</h2>
+              <h2 className="text-xl font-semibold text-gray-800">My Saved Scholarships</h2>
               <button
-                onClick={() => router.push('/profile/savelists/create')}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                onClick={() => router.push('/scholarships/search')}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                Create New List
+                Browse Scholarships
               </button>
             </div>
             
-            {saveLists.length > 0 ? (
+            {loadingSaved ? (
+              <div className="text-center py-10">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p className="mt-2 text-sm text-gray-500">Loading saved scholarships...</p>
+              </div>
+            ) : savedScholarships.length > 0 ? (
               <div className="space-y-4">
-                {saveLists.map(list => (
-                  <div key={list.id} className="border border-gray-200 rounded-lg p-4 hover:bg-purple-50">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="text-lg font-medium text-gray-800">{list.name}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{list.description}</p>
-                        <div className="mt-2 flex items-center space-x-4">
-                          <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-                            {list.scholarship_count} scholarships
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            Last updated: {new Date(list.last_updated).toLocaleDateString()}
-                          </span>
+                {savedScholarships.map(savedItem => (
+                  <div key={savedItem.id} className="border border-gray-200 rounded-lg p-4 hover:bg-blue-50 transition-colors">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-medium text-gray-800 mb-2">
+                          {savedItem.scholarship_details.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                          {savedItem.scholarship_details.description}
+                        </p>
+                        
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {savedItem.scholarship_details.levels.length > 0 && (
+                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                              {savedItem.scholarship_details.levels.join(', ')}
+                            </span>
+                          )}
+                          {savedItem.scholarship_details.categories.length > 0 && (
+                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                              {savedItem.scholarship_details.categories.join(', ')}
+                            </span>
+                          )}
+                          {savedItem.scholarship_details.country && (
+                            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                              {savedItem.scholarship_details.country}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center space-x-4 text-xs text-gray-500">
+                          <span>Deadline: {new Date(savedItem.scholarship_details.deadline).toLocaleDateString()}</span>
+                          <span>Saved: {new Date(savedItem.date_saved).toLocaleDateString()}</span>
                         </div>
                       </div>
-                      <div className="flex space-x-2">
-                        <button 
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
-                          onClick={() => router.push(`/profile/savelists/${list.id}`)}
+                      
+                      <div className="flex space-x-2 ml-4">
+                        <Link
+                          href={`/scholarships/scholarshipdetails?id=${savedItem.scholarship_details.id}`}
+                          className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                          title="View Details"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                             <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
                           </svg>
-                        </button>
+                        </Link>
+                        
+                        {savedItem.scholarship_details.application_url && (
+                          <a
+                            href={savedItem.scholarship_details.application_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-green-600 hover:bg-green-100 rounded-full transition-colors"
+                            title="Apply Now"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                          </a>
+                        )}
+                        
                         <button 
-                          className="p-2 text-purple-600 hover:bg-purple-50 rounded-full"
-                          onClick={() => router.push(`/profile/savelists/${list.id}/edit`)}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                          </svg>
-                        </button>                        <button 
-                          onClick={() => handleDeleteSaveList(list.id)}
+                          onClick={() => handleDeleteSavedScholarship(savedItem.id)}
                           disabled={isDeleting}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+                          className="p-2 text-red-600 hover:bg-red-100 rounded-full transition-colors disabled:opacity-50"
+                          title="Remove from Saved"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -813,23 +860,23 @@ const ProfilePage = () => {
               </div>
             ) : (
               <div className="text-center py-10">
-                <svg className="mx-auto h-12 w-12 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                <svg className="mx-auto h-12 w-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                 </svg>
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No saved lists yet</h3>
+                <h3 className="mt-2 text-sm font-medium text-gray-900">No saved scholarships yet</h3>
                 <p className="mt-1 text-sm text-gray-500">
-                  Create a list to organize scholarships by priority or category
+                  Start saving scholarships you're interested in to keep track of them here
                 </p>
                 <div className="mt-6">
                   <button
                     type="button"
-                    onClick={() => router.push('/profile/savelists/create')}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                    onClick={() => router.push('/scholarships/search')}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                      <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                     </svg>
-                    Create New List
+                    Browse Scholarships
                   </button>
                 </div>
               </div>

@@ -3,10 +3,24 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
+interface UserProfile {
+  bio?: string;
+  education?: string;
+  phone_number?: string;
+  address?: string;
+  date_of_birth?: string;
+  profile_picture?: string;
+}
+
 interface User {
   id?: string;
   name?: string;
   email: string;
+  full_name?: string;
+  first_name?: string;
+  last_name?: string;
+  profile?: UserProfile;
+  date_joined?: string;
 }
 
 interface AuthContextType {
