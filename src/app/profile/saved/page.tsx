@@ -32,7 +32,6 @@ export default function SavedScholarshipsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchSavedScholarships = async () => {
       setLoading(true);
@@ -40,19 +39,26 @@ export default function SavedScholarshipsPage() {
       
       try {
         const token = localStorage.getItem('authToken');
-        if (!token) throw new Error('Authentication token not found');
-          const response = await fetch('http://localhost:8000/api/user/saved-scholarships/', {
+        if (!token) {
+          setError('You must be logged in to view saved scholarships');
+          setLoading(false);
+          return;
+        }        const response = await fetch('http://localhost:8000/api/user/saved-scholarships/', {
           headers: {
             'Authorization': `Bearer ${token}`,
           }
         });
         
         if (!response.ok) {
-          throw new Error('Failed to fetch saved scholarships');
-        }        
-        const data = await response.json();
+          if (response.status === 401) {
+            setError('Your session has expired. Please log in again.');
+          } else {
+            setError(`Failed to fetch saved scholarships: ${response.status}`);
+          }
+          return;
+        }          const data = await response.json();
         console.log('Saved scholarships API response:', data);
-        setSavedScholarships(data);
+        setSavedScholarships(data.results || []);
       } catch (err) {
         console.error('Error fetching saved scholarships:', err);
         setError(err instanceof Error ? err.message : 'An error occurred while fetching saved scholarships');
@@ -90,83 +96,7 @@ export default function SavedScholarshipsPage() {
     } catch (err) {
       console.error('Error removing scholarship:', err);
       setError(err instanceof Error ? err.message : 'An error occurred while removing the scholarship');
-    }
-  };
-  // Sample data for display purposes (matching API structure)
-  const sampleSavedScholarships = [
-    {
-      id: 1,
-      scholarship: 101,
-      scholarship_details: {
-        id: 101,
-        title: "Merit Scholarship",
-        provider: "Global Education Fund",
-        amount: "5000",
-        deadline: "2025-06-30",
-        description: "A scholarship for outstanding academic achievements.",
-        country_name: "United States"
-      },
-      date_saved: "2025-05-10"
-    },
-    {
-      id: 2,
-      scholarship: 102,
-      scholarship_details: {
-        id: 102,
-        title: "STEM Excellence Award",
-        provider: "Tech Innovators Foundation",
-        amount: "7500",
-        deadline: "2025-07-15",
-        description: "Awarded to students with exceptional achievements in STEM fields.",
-        country_name: "Canada"
-      },
-      date_saved: "2025-05-15"
-    },
-    {
-      id: 3,
-      scholarship: 103,
-      scholarship_details: {
-        id: 103,
-        title: "Future Leaders Scholarship",
-        provider: "Leadership Academy",
-        amount: "3000",
-        deadline: "2025-08-01",
-        description: "For students who demonstrate leadership skills in their community.",
-        country_name: "United Kingdom"
-      },
-      date_saved: "2025-05-20"
-    },
-    {
-      id: 4,
-      scholarship: 104,
-      scholarship_details: {
-        id: 104,
-        title: "Arts and Culture Grant",
-        provider: "Creative Arts Foundation",
-        amount: "2500",
-        deadline: "2025-09-15",
-        description: "Supporting students pursuing degrees in arts, music, or cultural studies.",
-        country_name: "Australia"
-      },
-      date_saved: "2025-05-22"
-    },
-    {
-      id: 5,
-      scholarship: 105,
-      scholarship_details: {
-        id: 105,
-        title: "Global Citizenship Scholarship",
-        provider: "International Education Institute",
-        amount: "10000",
-        deadline: "2025-06-15",
-        description: "For students who contribute to international understanding and cooperation.",
-        country_name: "Germany"
-      },
-      date_saved: "2025-05-25"
-    }
-  ];
-
-  const displayScholarships = savedScholarships.length > 0 ? savedScholarships : sampleSavedScholarships;
+    }  };
 
   if (loading) {
     return (
@@ -183,15 +113,34 @@ export default function SavedScholarshipsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Saved Scholarships</h1>
-          <p className="text-gray-600 mt-2">Manage your bookmarked scholarships</p>
-          {savedScholarships.length > 0 && (
-            <p className="text-sm text-gray-500 mt-1">
-              {savedScholarships.length} scholarship{savedScholarships.length !== 1 ? 's' : ''} saved
-            </p>
-          )}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center space-x-4 mb-2">
+                <Link href="/profile" className="text-blue-600 hover:text-blue-800 flex items-center">
+                  <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Back to Profile
+                </Link>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-800">Saved Scholarships</h1>
+              <p className="text-gray-600 mt-2">Manage your bookmarked scholarships</p>
+              {savedScholarships.length > 0 && (
+                <p className="text-sm text-gray-500 mt-1">
+                  {savedScholarships.length} scholarship{savedScholarships.length !== 1 ? 's' : ''} saved
+                </p>
+              )}
+            </div>
+            <Link
+              href="/scholarships/search"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Find More Scholarships
+            </Link>
+          </div>
         </div>
-          {error && (
+          
+        {error && (
           <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4">
             <p className="text-sm text-red-700">{error}</p>
           </div>
@@ -204,7 +153,7 @@ export default function SavedScholarshipsPage() {
         )}
         
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          {displayScholarships.length > 0 ? (
+          {savedScholarships.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -229,7 +178,8 @@ export default function SavedScholarshipsPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">                  {displayScholarships.map((item) => {
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {savedScholarships.map((item) => {
                     const scholarshipDetails = item.scholarship_details;
                     
                     if (!scholarshipDetails) {
