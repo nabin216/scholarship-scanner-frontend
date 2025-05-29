@@ -28,8 +28,7 @@ const ScholarshipSearch = () => {
   const { user, isAuthenticated } = useAuth();
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);  
-  const [filters, setFilters] = useState<Filters>({
+  const [error, setError] = useState<string | null>(null);    const [filters, setFilters] = useState<Filters>({
     levels: '',
     country: '',
     field_of_study: '',
@@ -42,19 +41,20 @@ const ScholarshipSearch = () => {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ field: 'deadline', direction: 'asc' });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [savingScholarships, setSavingScholarships] = useState<Set<number>>(new Set());
-  const [savedScholarships, setSavedScholarships] = useState<Set<number>>(new Set());
-
-  // Initialize filters from URL parameters
+  const [savedScholarships, setSavedScholarships] = useState<Set<number>>(new Set());    // Initialize filters from URL parameters
   useEffect(() => {
     if (searchParams) {
       const newFilters = {...filters};
       let hasChanges = false;
+      
+      console.log('URL searchParams:', Object.fromEntries([...searchParams.entries()]));
       
       ['levels', 'country', 'field_of_study', 'fund_type', 'sponsor_type', 'scholarship_category', 'deadline_before', 'language_requirement'].forEach(param => {
         const value = searchParams.get(param);
         if (value) {
           newFilters[param as keyof Filters] = value;
           hasChanges = true;
+          console.log(`Setting filter ${param}=${value}`);
         }
       });
       
@@ -63,16 +63,22 @@ const ScholarshipSearch = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);    useEffect(() => {
+  }, [searchParams]);  useEffect(() => {
     const fetchScholarships = async () => {
       try {
         setLoading(true);
         // Build query params based on filters
-        const queryParams = new URLSearchParams();        // Add each filter value if it exists
-        Object.entries(filters).forEach(([key, value]) => {            if (value) {
+        const queryParams = new URLSearchParams();
+        
+        // Add each filter value if it exists
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value) {
             // All filters are applied directly
             queryParams.append(key, value);
             console.log(`Applying filter: ${key}=${value}`);
+            if (key === 'country') {
+              console.log('Country filter value is a string name, not an ID');
+            }
           }
         });
         
@@ -83,7 +89,7 @@ const ScholarshipSearch = () => {
           headers: {
             'Content-Type': 'application/json',
           }
-        });        
+        });
         
         if (!response.ok) {
           const errorText = await response.text();
@@ -104,7 +110,9 @@ const ScholarshipSearch = () => {
       } finally {
         setLoading(false);
       }
-    };    fetchScholarships();
+    };
+
+    fetchScholarships();
   }, [filters, searchParams]);
 
   // Fetch saved scholarships when user is authenticated
@@ -248,10 +256,9 @@ const ScholarshipSearch = () => {
         case 'title':
           return sortConfig.direction === 'asc'
             ? a.title.localeCompare(b.title)
-            : b.title.localeCompare(a.title);
-        case 'country':
-          const countryA = a.country_name || a.country;
-          const countryB = b.country_name || b.country;
+            : b.title.localeCompare(a.title);        case 'country':
+          const countryA = a.country_detail?.name || a.country_name || '';
+          const countryB = b.country_detail?.name || b.country_name || '';
           return sortConfig.direction === 'asc'
             ? countryA.localeCompare(countryB)
             : countryB.localeCompare(countryA);
@@ -341,15 +348,16 @@ const ScholarshipSearch = () => {
                     value={filters.country}
                     onChange={(e) => handleFilterChange('country', e.target.value)}
                   >
-                    <option value="">Country</option>
-                    {/* Use unique countries from scholarships data */}
-                    {scholarships && scholarships.length > 0 && Array.isArray(scholarships) && 
-                      Array.from(new Set(scholarships.map(s => s.country_name || s.country)))
-                        .filter(Boolean)
-                        .sort()
-                        .map(country => (
-                          <option key={country} value={country}>{country}</option>
-                        ))
+                    <option value="">Country</option>                    {/* Use countries with their IDs */}
+                    {scholarships && scholarships.length > 0 && Array.isArray(scholarships) &&                      Array.from(new Set(
+                        scholarships
+                          .filter(s => s.country_detail?.name || s.country_name)
+                          .map(s => s.country_detail?.name || s.country_name)
+                      ))
+                      .sort()
+                      .map(countryName => (
+                        <option key={countryName} value={countryName}>{countryName}</option>
+                      ))
                     }
                   </select>
                 </div>
@@ -708,7 +716,7 @@ const ScholarshipSearch = () => {
                       </div>                        {/* Right side with button */}
                       <div className="w-1/4 flex flex-col items-end justify-between">
                         <span className="bg-blue-50 text-blue-800 text-xs px-2 py-1 rounded">
-                          {scholarship.country_name || scholarship.country}
+                          {scholarship.country_detail?.name || scholarship.country_name}
                         </span>                        
                         <button
                           onClick={(e) => {

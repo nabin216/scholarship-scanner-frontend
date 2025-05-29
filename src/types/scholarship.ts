@@ -2,9 +2,12 @@ export interface Scholarship {
     id: number;
     title: string;
     description: string;
-    levels: ScholarshipLevel[];
-    country: string;
-    country_name?: string;  // From country.name
+    levels: ScholarshipLevel[];    country: number;
+    country_detail?: {
+        id: number;
+        name: string;
+    };
+    country_name?: string;
     field_of_study: FieldOfStudy[];
     deadline: string;
     open_date: string | null;

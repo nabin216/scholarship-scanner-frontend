@@ -192,9 +192,8 @@ export default function ScholarshipDetails() {
                 <div className="space-y-3 text-sm">
                   {/* Country */}
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Country:</span>
-                    <span className="font-medium text-gray-900">
-                      {scholarship.country_name || scholarship.country}
+                    <span className="text-gray-600">Country:</span>                    <span className="font-medium text-gray-900">
+                      {scholarship.country && scholarship.country.name}
                     </span>
                   </div>
 
