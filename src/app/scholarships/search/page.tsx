@@ -634,14 +634,13 @@ const ScholarshipSearch = () => {
             {/* Scholarship Cards */}
             {!loading && !error && (
               <div className="space-y-4">
-                {sortedScholarships.length > 0 ? (
-                  sortedScholarships.map((scholarship) => (
+                {sortedScholarships.length > 0 ? (                  sortedScholarships.map((scholarship) => (
                     <div key={scholarship.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
                       
                       {/* Mobile Layout */}
                       <div className="block sm:hidden">
-                        {/* Content section */}
-                        <div className="relative pt-2 pb-2">
+                        {/* Content section with save button */}
+                        <div className="relative">
                           {/* Country tag */}
                           <div className="absolute top-2 right-2 z-10">
                             <span className="bg-blue-50 text-blue-800 text-xs px-2 py-1 rounded-full whitespace-nowrap">
@@ -653,7 +652,7 @@ const ScholarshipSearch = () => {
                           <Link 
                             href={scholarship.application_url || `/scholarships/scholarshipdetails?id=${scholarship.id}`}
                             target={scholarship.application_url ? "_blank" : "_self"}
-                            className="block"
+                            className="block pt-2 pb-2"
                           >
                             <div className="flex pb-3 pr-3 pt-2 pl-3">
                               {/* Left side image */}
@@ -713,33 +712,30 @@ const ScholarshipSearch = () => {
                                   <span className="font-medium">Levels:</span>{' '}
                                   {scholarship.levels.map((l) => l.name).join(', ')}
                                 </div>
-                              </div>
-                            </div>
+                              </div>                            </div>
                           </Link>
+                          
+                          {/* Save button inside card */}
+                          <div className="px-3 pb-3">
+                            <button
+                              onClick={() => handleSaveScholarship(scholarship.id)}
+                              disabled={savingScholarships.has(scholarship.id)}
+                              className={`w-full py-2 rounded-md text-sm font-medium transition-colors ${
+                                savedScholarships.has(scholarship.id)
+                                  ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                                  : 'bg-yellow-400 hover:bg-yellow-500 text-gray-900'
+                              } ${savingScholarships.has(scholarship.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                              {savingScholarships.has(scholarship.id) 
+                                ? 'Saving...' 
+                                : savedScholarships.has(scholarship.id) 
+                                  ? '✓ Saved' 
+                                  : '💾 Save'
+                              }
+                            </button>
+                          </div>
                         </div>
-                        
-                        {/* Separate save button */}
-                        <div className="px-3 pb-3">
-                          <button
-                            onClick={() => handleSaveScholarship(scholarship.id)}
-                            disabled={savingScholarships.has(scholarship.id)}
-                            className={`w-full py-2 rounded-md text-sm font-medium transition-colors ${
-                              savedScholarships.has(scholarship.id)
-                                ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                                : 'bg-yellow-400 hover:bg-yellow-500 text-gray-900'
-                            } ${savingScholarships.has(scholarship.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          >
-                            {savingScholarships.has(scholarship.id) 
-                              ? 'Saving...' 
-                              : savedScholarships.has(scholarship.id) 
-                                ? '✓ Saved' 
-                                : '💾 Save'
-                            }
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Desktop Layout */}
+                      </div>                      {/* Desktop Layout */}
                       <div className="hidden sm:block">
                         <div className="flex h-48">
                           {/* Scholarship Image */}
@@ -763,7 +759,7 @@ const ScholarshipSearch = () => {
                             <Link 
                               href={scholarship.application_url || `/scholarships/scholarshipdetails?id=${scholarship.id}`}
                               target={scholarship.application_url ? "_blank" : "_self"}
-                              className="flex-1 p-4"
+                              className="flex-1 p-4 pb-2"
                             >
                               <div className="flex flex-col space-y-2">
                                 {/* Header with title and country */}
@@ -810,20 +806,21 @@ const ScholarshipSearch = () => {
                                       {new Date(scholarship.deadline).toLocaleDateString()}
                                     </span>
                                   </div>
-                                </div>
-                              </div>
+                                </div>                              </div>
                             </Link>
                             
-                            {/* Desktop save button in its own section */}
-                            <div className="px-4 pb-4 pt-0 flex justify-end">
+                            {/* Desktop save button */}
+                            <div className="px-4 pb-4 flex justify-end">
                               <button
                                 onClick={() => handleSaveScholarship(scholarship.id)}
-                                disabled={savingScholarships.has(scholarship.id)}                                className={`py-2 px-4 rounded-md text-sm font-medium transition-colors self-end float-right ${
+                                disabled={savingScholarships.has(scholarship.id)}
+                                className={`py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                                   savedScholarships.has(scholarship.id)
                                     ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
                                     : 'bg-yellow-400 hover:bg-yellow-500 text-gray-900'
                                 } ${savingScholarships.has(scholarship.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                              >                                {savingScholarships.has(scholarship.id) 
+                              >
+                                {savingScholarships.has(scholarship.id) 
                                   ? 'Saving...' 
                                   : savedScholarships.has(scholarship.id) 
                                     ? '✓ Saved' 
