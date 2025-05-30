@@ -1,5 +1,6 @@
 import Button from '../components/ui/Button';
 import HomeSearchFilter from '../components/HomeSearchFilter';
+import FeaturedProviders from '../components/FeaturedProviders';
 import { 
   AcademicCapIcon, 
   MagnifyingGlassIcon, 
@@ -57,13 +58,12 @@ const HomePage = () => {
             rating: 5
         }
     ];    return (
-        <div>
+        <div className="mx-4 md:mx-8 lg:mx-12">
               {/* Hero Section */}
-            <section className="relative z-0 mx-4 md:mx-8 lg:mx-12">
+            <section className="relative z-0">
                 <div className="relative bg-cover bg-center rounded-none py-16" style={{ 
                     backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 15%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.1) 85%, rgba(0,0,0,0.5) 100%), url("/images/university.jpg")'
-                }}>
-                    <div className="container mx-auto px-4">
+                }}>                    <div className="container mx-auto">
                         <div className="text-center mb-16">
                             <h1 className="text-4xl font-bold text-gray-900 mb-4">
                                 Find your scholarship with ScholarMatch
@@ -74,16 +74,14 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>                
-                {/* Filter section - positioned to overlap the hero image */}
-                <div className="relative z-10 -mt-12 max-w-4xl mx-auto px-4">
+                {/* Filter section - positioned to overlap the hero image */}                <div className="relative z-10 -mt-12 max-w-4xl mx-auto">
                     {/* Using the HomeSearchFilter component which handles the navigation */}
                     <HomeSearchFilter />
-                </div>
-            </section>
+                </div></section>
 
             {/* Featured Scholarships */}
-            <section className="py-12">
-                <div className="container mx-auto px-4">
+            <section className="py-12 z-0">
+                <div className="container mx-auto">
                     <h2 className="text-2xl font-semibold mb-8">Featured scholarships</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         <div className="relative aspect-[3/3.5]">
@@ -96,14 +94,13 @@ const HomePage = () => {
                         {/* 2nd card split into two parts */}
                         <div className="grid grid-rows-2 gap-3">
                             <div className="relative aspect-[3/1.7]">
-                                                            <img src={Imagr1.src} alt="Undergraduate" className="w-full h-full object-cover" />
-
+                                <img src={Imagr1.src} alt="Undergraduate" className="w-full h-full object-cover" />
                                 <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium">
                                     Master's
                                 </div>
                             </div>
                             <div className="relative aspect-[3/1.7]">
-                            <img src={Imagr1.src} alt="Undergraduate" className="w-full h-full object-cover" />
+                                <img src={Imagr1.src} alt="Undergraduate" className="w-full h-full object-cover" />
                                 <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium">
                                     Research
                                 </div>
@@ -134,60 +131,16 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-            </section>
-
-            {/* Top Scholarship Providers */}
+            </section>              {/* Top Scholarship Providers */}
             <section className="py-12 bg-gray-50">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto">
                     <h2 className="text-2xl font-semibold mb-8">Top scholarship providers</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        <div className="bg-white p-6 rounded-lg text-center hover:shadow-md transition-shadow">
-                            <div className="mb-4">
-                                <img src="/images/providers/scholarship-hub.jpg" alt="Scholarship Hub" className="w-full h-32 object-cover rounded" />
-                            </div>
-                            <h3 className="text-sm font-medium">Scholarship Hub</h3>
-                            <p className="text-xs text-gray-500">Global</p>
-                            <button className="mt-4 text-sm text-blue-600 hover:underline">Apply now →</button>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg text-center hover:shadow-md transition-shadow">
-                            <div className="mb-4">
-                                <img src="/images/providers/future-leaders.jpg" alt="Future Leaders Fund" className="w-full h-32 object-cover rounded" />
-                            </div>
-                            <h3 className="text-sm font-medium">Future Leaders Fund</h3>
-                            <p className="text-xs text-gray-500">International</p>
-                            <button className="mt-4 text-sm text-blue-600 hover:underline">Apply now →</button>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg text-center hover:shadow-md transition-shadow">
-                            <div className="mb-4">
-                                <img src="/images/providers/dream-achievers.jpg" alt="Dream Achievers Program" className="w-full h-32 object-cover rounded" />
-                            </div>
-                            <h3 className="text-sm font-medium">Dream Achievers Program</h3>
-                            <p className="text-xs text-gray-500">National</p>
-                            <button className="mt-4 text-sm text-blue-600 hover:underline">Apply now →</button>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg text-center hover:shadow-md transition-shadow">
-                            <div className="mb-4">
-                                <img src="/images/providers/global-scholars.jpg" alt="Global Scholars Network" className="w-full h-32 object-cover rounded" />
-                            </div>
-                            <h3 className="text-sm font-medium">Global Scholars Network</h3>
-                            <p className="text-xs text-gray-500">Regional</p>
-                            <button className="mt-4 text-sm text-blue-600 hover:underline">Apply now →</button>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg text-center hover:shadow-md transition-shadow">
-                            <div className="mb-4">
-                                <img src="/images/providers/opportunity-seekers.jpg" alt="Opportunity Seekers Club" className="w-full h-32 object-cover rounded" />
-                            </div>
-                            <h3 className="text-sm font-medium">Opportunity Seekers Club</h3>
-                            <p className="text-xs text-gray-500">Local</p>
-                            <button className="mt-4 text-sm text-blue-600 hover:underline">Apply now →</button>
-                        </div>
-                    </div>
+                    {/* FeaturedProviders component with horizontal scroll for > 5 items */}
+                    <FeaturedProviders />
                 </div>
-            </section>
-
-            {/* Stats Section */}
+            </section>{/* Stats Section */}
             <section className="py-16 bg-white">
-                <div className="container">
+                <div className="container mx-auto">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                         {stats.map((stat, index) => (
                             <div key={index} className="text-center">
@@ -201,11 +154,9 @@ const HomePage = () => {
                         ))}
                     </div>
                 </div>
-            </section>
-
-            {/* Features Section */}
+            </section>            {/* Features Section */}
             <section className="py-20 bg-gray-50">
-                <div className="container">
+                <div className="container mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
                             Why Choose ScholarMatch?
@@ -229,11 +180,9 @@ const HomePage = () => {
                         ))}
                     </div>
                 </div>
-            </section>
-
-            {/* CTA Section */}
+            </section>            {/* CTA Section */}
             <section className="py-20 bg-primary-600">
-                <div className="container text-center">
+                <div className="container mx-auto text-center">
                     <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
                         Ready to Find Your Scholarship?
                     </h2>
