@@ -1,6 +1,7 @@
 import Button from '../components/ui/Button';
 import HomeSearchFilter from '../components/HomeSearchFilter';
 import FeaturedProviders from '../components/FeaturedProviders';
+import Link from 'next/link';
 import { 
   AcademicCapIcon, 
   MagnifyingGlassIcon, 
@@ -77,68 +78,75 @@ const HomePage = () => {
                 {/* Filter section - positioned to overlap the hero image */}                <div className="relative z-10 -mt-12 max-w-4xl mx-auto">
                     {/* Using the HomeSearchFilter component which handles the navigation */}
                     <HomeSearchFilter />
-                </div></section>
-
-            {/* Featured Scholarships */}
+                </div></section>            
+                {/* Featured Scholarships */}
             <section className="py-12 z-0">
                 <div className="container mx-auto">
                     <h2 className="text-2xl font-semibold mb-8">Featured scholarships</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <div className="relative aspect-[3/3.5]">
-                            <img src={Imagr1.src} alt="Undergraduate" className="w-full h-full object-cover" />
-                            <div className="absolute bottom-3 left-3 bg-white px-2 py-1 text-sm font-medium">
+                        <Link href="/scholarships/search?education_level=undergraduate" className="relative aspect-[3/3.5] group cursor-pointer">
+                            <img src={Imagr1.src} alt="Undergraduate" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                            <div className="absolute bottom-3 left-3 bg-white px-2 py-1 text-sm font-medium group-hover:bg-blue-50 transition-colors">
                                 Undergraduate
                             </div>
-                        </div>
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300"></div>
+                        </Link>
                         
                         {/* 2nd card split into two parts */}
                         <div className="grid grid-rows-2 gap-3">
-                            <div className="relative aspect-[3/1.7]">
-                                <img src={Imagr1.src} alt="Undergraduate" className="w-full h-full object-cover" />
-                                <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium">
+                            <Link href="/scholarships/search?education_level=masters" className="relative aspect-[3/1.7] group cursor-pointer">
+                                <img src={Imagr1.src} alt="Master's" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium group-hover:bg-blue-50 transition-colors">
                                     Master's
                                 </div>
-                            </div>
-                            <div className="relative aspect-[3/1.7]">
-                                <img src={Imagr1.src} alt="Undergraduate" className="w-full h-full object-cover" />
-                                <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium">
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300"></div>
+                            </Link>
+                            <Link href="/scholarships/search?field_of_study=research" className="relative aspect-[3/1.7] group cursor-pointer">
+                                <img src={Imagr1.src} alt="Research" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium group-hover:bg-blue-50 transition-colors">
                                     Research
                                 </div>
-                            </div>
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300"></div>
+                            </Link>
                         </div>
-                        
-                        <div className="relative aspect-[3/3.5]">
-                            <img src={Imagr1.src} alt="PhD" className="w-full h-full object-cover" />
-                            <div className="absolute bottom-3 left-3 bg-white px-2 py-1 text-sm font-medium">
-                                PhD
-                            </div>
-                        </div>
-                        
                         {/* 4th card split into two parts */}
                         <div className="grid grid-rows-2 gap-3">
-                            <div className="relative aspect-[3/1.7]">
-                                <img src="/images/scholarships/medical.jpg" alt="Medical" className="w-full h-full object-cover" />
-                                <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium">
+                            <Link href="/scholarships/search?field_of_study=medicine" className="relative aspect-[3/1.7] group cursor-pointer">
+                            <img src={Imagr1.src} alt="PhD" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium group-hover:bg-blue-50 transition-colors">
                                     Medical School
                                 </div>
-                            </div>
-                            <div className="relative aspect-[3/1.7]">
-                                <img src="/images/scholarships/engineering.jpg" alt="Engineering" className="w-full h-full object-cover" />
-                                <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium">
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300"></div>
+                            </Link>
+                            <Link href="/scholarships/search?field_of_study=engineering" className="relative aspect-[3/1.7] group cursor-pointer">
+                            <img src={Imagr1.src} alt="PhD" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-medium group-hover:bg-blue-50 transition-colors">
                                     Engineering
                                 </div>
-                            </div>
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300"></div>
+                            </Link>
                         </div>
+                        
+                        <Link href="/scholarships/search?education_level=phd" className="relative aspect-[3/3.5] group cursor-pointer">
+                            <img src={Imagr1.src} alt="PhD" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                            <div className="absolute bottom-3 left-3 bg-white px-2 py-1 text-sm font-medium group-hover:bg-blue-50 transition-colors">
+                                PhD
+                            </div>
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300"></div>
+                        </Link>
+                        
+                        
                     </div>
                 </div>
-            </section>              {/* Top Scholarship Providers */}
+            </section>{/* Top Scholarship Providers */}
             <section className="py-12 bg-gray-50">
                 <div className="container mx-auto">
                     <h2 className="text-2xl font-semibold mb-8">Top scholarship providers</h2>
                     {/* FeaturedProviders component with horizontal scroll for > 5 items */}
                     <FeaturedProviders />
                 </div>
-            </section>{/* Stats Section */}
+            </section>
+            {/* Stats Section */}
             <section className="py-16 bg-white">
                 <div className="container mx-auto">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -154,7 +162,8 @@ const HomePage = () => {
                         ))}
                     </div>
                 </div>
-            </section>            {/* Features Section */}
+            </section>            
+            {/* Features Section */}
             <section className="py-20 bg-gray-50">
                 <div className="container mx-auto">
                     <div className="text-center mb-16">
@@ -180,7 +189,8 @@ const HomePage = () => {
                         ))}
                     </div>
                 </div>
-            </section>            {/* CTA Section */}
+            </section>           
+             {/* CTA Section */}
             <section className="py-20 bg-primary-600">
                 <div className="container mx-auto text-center">
                     <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">

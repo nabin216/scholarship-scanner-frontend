@@ -27,7 +27,6 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   loginWithGoogle: () => Promise<void>;
   handleGoogleCallback: (token: string, userData: any) => Promise<void>;
@@ -279,54 +278,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false); // Make sure loading is always set to false
     }
   };
-
-  const register = async (name: string, email: string, password: string): Promise<void> => {
-    setLoading(true);
-    try {
-      // Split full name into first and last name
-      const [firstName, ...lastNameParts] = name.trim().split(' ');
-      const lastName = lastNameParts.join(' ');      const response = await fetch('http://localhost:8000/api/user/auth/register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          email,
-          password,
-          password2: password, // Password confirmation required by backend
-          full_name: name,
-          first_name: firstName,
-          last_name: lastName || '' // If no last name provided, use empty string
-        }),
-      });      if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.detail || 
-          Object.values(errorData).map(err => 
-            Array.isArray(err) ? err.join(', ') : err
-          ).join(', ');
-        throw new Error(errorMessage || 'Registration failed');
-      }
-
-      const data = await response.json();
-      
-      // Some APIs might return a token immediately after registration
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
-        setUser({
-          id: data.user?.id,
-          name: data.user?.name || name,
-          email: data.user?.email || email,
-        });
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
   const logout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('refreshToken');
@@ -340,7 +291,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user,
     loading,
     login,
-    register,
     logout,
     loginWithGoogle,
     handleGoogleCallback,

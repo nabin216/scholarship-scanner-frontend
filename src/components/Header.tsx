@@ -162,7 +162,10 @@ const Header: React.FC = () => {
                 <div className="flex items-center space-x-6 md:ml-0">
                     {/* Logo is visible on all screens */}
                     <Link href="/" className="flex items-center">
-                        <span className="text-xl font-bold text-gray-900">ScholarMatch</span>
+                        <span className="text-2xl md:text-2xl font-extrabold tracking-tight leading-none">
+                            <span className="text-blue-600">Scholar</span>
+                            <span className="text-yellow-500">Scanner</span>
+                        </span>
                     </Link>
 
                     {/* Desktop Navigation - visible only on md+ screens */}
