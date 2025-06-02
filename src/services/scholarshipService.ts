@@ -1,5 +1,5 @@
 import ApiService from './apiService';
-import { Scholarship } from '@/types/scholarship';
+import { Scholarship } from '../types/scholarship';
 
 /**
  * Service for scholarship-related API operations

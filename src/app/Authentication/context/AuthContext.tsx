@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { ApiService } from '../../../services/apiService';
 
 interface UserProfile {
   bio?: string;
@@ -47,9 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = localStorage.getItem('authToken');
       
       if (token) {
-        try {
-          // First, verify the token is valid
-          const verifyResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/auth/token/verify/`, {
+        try {          // First, verify the token is valid
+          const verifyResponse = await fetch(ApiService.getApiUrl('user/auth/token/verify/'), {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -61,9 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.log("Token invalid, status:", verifyResponse.status);
             // Try to use refresh token if available
             const refreshToken = localStorage.getItem('refreshToken');
-            if (refreshToken) {
-              try {
-                const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/auth/token/refresh/`, {
+            if (refreshToken) {              try {
+                const refreshResponse = await fetch(ApiService.getApiUrl('user/auth/token/refresh/'), {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -106,10 +105,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     };
-    
-    const fetchUserData = async (token: string) => {
+      const fetchUserData = async (token: string) => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/auth/me/`, {
+        const response = await fetch(ApiService.getApiUrl('user/auth/me/'), {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -149,15 +147,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const height = 600;
     const left = window.screenX + (window.outerWidth - width) / 2;
     const top = window.screenY + (window.outerHeight - height) / 2;
-    
-    // Construct Google OAuth URL
+      // Construct Google OAuth URL
     const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=604558986475-755fbv5bvlnamnhdm3fts9ck54ujbkv4.apps.googleusercontent.com` +
-      `&redirect_uri=${encodeURIComponent('http://localhost:3001/Authentication/google-callback')}` +
+      `client_id=${ApiService.getConfig().googleClientId}` +
+      `&redirect_uri=${encodeURIComponent(ApiService.getConfig().googleOAuthRedirectUri)}` +
       `&response_type=id_token` +
       `&scope=${encodeURIComponent('openid email profile')}` +
       `&nonce=${Math.random().toString(36).substring(2, 15)}` +
-      `&prompt=select_account`;    // Open the Google OAuth popup
+      `&prompt=select_account`;// Open the Google OAuth popup
     const popup = window.open(
       googleOAuthUrl,
       'Google Login',
@@ -179,10 +176,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }      }
     });
   };
-
   const handleGoogleCallback = async (token: string, userData: any): Promise<void> => {
     try {      // Exchange the Google auth token for our app JWT
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/auth/google/token/`, {
+      const response = await fetch(ApiService.getApiUrl('user/auth/google/token/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -226,7 +222,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error;
     }
   };
-
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true);
     try {
@@ -234,7 +229,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('refreshToken');
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/auth/login/`, {
+      const response = await fetch(ApiService.getApiUrl('user/auth/login/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

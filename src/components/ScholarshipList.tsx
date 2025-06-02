@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ScholarshipService from '@/services/scholarship';
-import config from '@/utils/config';
+import ScholarshipService from '../services/scholarship';
+import config from '../utils/config';
 
 interface Scholarship {
   id: number;

@@ -102,6 +102,25 @@ export class AuthService {
   static isAuthenticated(): boolean {
     return localStorage.getItem('authToken') !== null;
   }
+
+  /**
+   * Request password reset
+   */
+  static async requestPasswordReset(email: string) {
+    return ApiService.post('user/auth/password-reset-request/', { email });
+  }
+
+  /**
+   * Confirm password reset with OTP
+   */
+  static async confirmPasswordReset(resetData: {
+    email: string;
+    otp_code: string;
+    new_password: string;
+    new_password2: string;
+  }) {
+    return ApiService.post('user/auth/password-reset-confirm/', resetData);
+  }
 }
 
 export default AuthService;

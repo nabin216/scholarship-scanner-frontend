@@ -1,9 +1,14 @@
 {
   "pages": {
-    "/scholarships/search/page": [
+    "/Authentication/register/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/scholarships/search/page.js"
+      "static/chunks/app/Authentication/register/page.js"
+    ],
+    "/Authentication/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/Authentication/layout.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,26 +16,11 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/scholarships/scholarshipdetails/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/scholarships/scholarshipdetails/page.js"
-    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/page.css",
       "static/chunks/app/page.js"
-    ],
-    "/Authentication/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/Authentication/login/page.js"
-    ],
-    "/Authentication/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/Authentication/layout.js"
     ],
     "/profile/page": [
       "static/chunks/webpack.js",
@@ -42,15 +32,35 @@
       "static/chunks/main-app.js",
       "static/chunks/app/profile/layout.js"
     ],
-    "/profile/saved/page": [
+    "/Authentication/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/profile/saved/page.js"
+      "static/chunks/app/Authentication/login/page.js"
     ],
-    "/profile/applications/page": [
+    "/Authentication/forgot-password/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/profile/applications/page.js"
+      "static/chunks/app/Authentication/forgot-password/page.js"
+    ],
+    "/scholarships/search/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/scholarships/search/page.js"
+    ],
+    "/scholarships/scholarshipdetails/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/scholarships/scholarshipdetails/page.js"
+    ],
+    "/help-center/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/help-center/page.js"
+    ],
+    "/support-team/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/support-team/page.js"
     ],
     "/get-in-touch/page": [
       "static/chunks/webpack.js",

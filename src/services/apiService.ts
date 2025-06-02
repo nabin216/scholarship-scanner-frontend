@@ -1,18 +1,26 @@
-import config from '@/utils/config';
+import config from '../utils/config';
 
 /**
  * API Service for interacting with the backend
  */
-export class ApiService {
-  /**
+export class ApiService {  /**
    * Get the full API URL for a specific endpoint
    * @param path - The API endpoint path
    * @returns The complete API URL
-   */
-  static getApiUrl(path: string): string {
+   */  static getApiUrl(path: string): string {
     // Remove leading slash if present to avoid double slashes
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-    return `${config.apiUrl}/${cleanPath}`;
+    // Ensure the API URL doesn't end with a slash before concatenating
+    const baseUrl = config.apiUrl.endsWith('/') ? config.apiUrl.slice(0, -1) : config.apiUrl;
+    return `${baseUrl}/${cleanPath}`;
+  }
+  
+  /**
+   * Get configuration values
+   * @returns Application configuration object
+   */
+  static getConfig() {
+    return config;
   }
 
   /**

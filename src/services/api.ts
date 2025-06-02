@@ -1,4 +1,4 @@
-import { getApiUrl } from '@/utils/config';
+import { getApiUrl } from '../utils/config';
 
 /**
  * Base API client for making HTTP requests to the backend

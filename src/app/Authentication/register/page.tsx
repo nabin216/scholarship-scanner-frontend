@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import GoogleSignInButton from '../components/GoogleSignInButton';
+import { ApiService } from '../../../services/apiService';
 
 interface FormData {
   fullName: string;
@@ -53,14 +54,13 @@ export default function RegisterPage() {
       otp: otpValue,
     });
   };
-
   const sendVerificationEmail = async (email: string) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const response = await fetch('http://localhost:8000/api/user/auth/send-verification-email/', {
+      const response = await fetch(ApiService.getApiUrl('user/auth/send-verification-email/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,13 +83,12 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
-
   const verifyOtp = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8000/api/user/auth/verify-otp/', {
+      const response = await fetch(ApiService.getApiUrl('user/auth/verify-otp/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,13 +112,12 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
-
   const completeRegistration = async () => {
     try {
       const [firstName, ...lastNameParts] = formData.fullName.trim().split(' ');
       const lastName = lastNameParts.join(' ');
 
-      const response = await fetch('http://localhost:8000/api/user/auth/register/', {
+      const response = await fetch(ApiService.getApiUrl('user/auth/register/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -165,14 +163,13 @@ export default function RegisterPage() {
       setError(err instanceof Error ? err.message : 'An error occurred during registration');
     }
   };
-
   const resendOtp = async () => {
     setResendLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const response = await fetch('http://localhost:8000/api/user/auth/resend-otp/', {
+      const response = await fetch(ApiService.getApiUrl('user/auth/resend-otp/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -13,6 +13,10 @@ export const config = {
   // Authentication Settings
   jwtExpiry: parseInt(process.env.NEXT_PUBLIC_JWT_EXPIRY || '3600'),
   
+  // Google OAuth Settings
+  googleClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '604558986475-755fbv5bvlnamnhdm3fts9ck54ujbkv4.apps.googleusercontent.com',
+  googleOAuthRedirectUri: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_REDIRECT_URI || 'http://localhost:3001/Authentication/google-callback',
+  
   // Add more configuration variables as needed
   // Feature Flags
   enableSocialAuth: process.env.NEXT_PUBLIC_ENABLE_SOCIAL_AUTH === 'true',
