@@ -208,7 +208,7 @@ const Header: React.FC = () => {
                                     {(user as any)?.profile_picture ? (
                                         <img
                                             src={(user as any).profile_picture}
-                                            alt={user.name || 'Profile'}
+                                            alt={user?.name || 'Profile'}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (

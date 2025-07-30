@@ -12,13 +12,14 @@ export class ApiClient {
    */
   static async get(endpoint: string, options: RequestInit = {}) {
     const url = getApiUrl(endpoint);
+    const authHeader = this._getAuthHeader();
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...this._getAuthHeader(),
+        ...authHeader,
         ...(options.headers || {})
-      },
+      } as HeadersInit,
       ...options
     });
     
@@ -34,13 +35,14 @@ export class ApiClient {
    */
   static async post(endpoint: string, data: any, options: RequestInit = {}) {
     const url = getApiUrl(endpoint);
+    const authHeader = this._getAuthHeader();
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...this._getAuthHeader(),
+        ...authHeader,
         ...(options.headers || {})
-      },
+      } as HeadersInit,
       body: JSON.stringify(data),
       ...options
     });
@@ -57,13 +59,14 @@ export class ApiClient {
    */
   static async put(endpoint: string, data: any, options: RequestInit = {}) {
     const url = getApiUrl(endpoint);
+    const authHeader = this._getAuthHeader();
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        ...this._getAuthHeader(),
+        ...authHeader,
         ...(options.headers || {})
-      },
+      } as HeadersInit,
       body: JSON.stringify(data),
       ...options
     });
@@ -79,13 +82,14 @@ export class ApiClient {
    */
   static async delete(endpoint: string, options: RequestInit = {}) {
     const url = getApiUrl(endpoint);
+    const authHeader = this._getAuthHeader();
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        ...this._getAuthHeader(),
+        ...authHeader,
         ...(options.headers || {})
-      },
+      } as HeadersInit,
       ...options
     });
     

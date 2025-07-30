@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Scholarship, Filters, SortConfig } from '../../../types/scholarship';
 import { FilterOptions } from '../../../types/filterOptions';
 import Link from 'next/link';
 import { useAuth } from '../../Authentication/context/AuthContext';
 
-const ScholarshipSearch = () => {
+const ScholarshipSearchContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
@@ -857,6 +857,14 @@ const ScholarshipSearch = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const ScholarshipSearch = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ScholarshipSearchContent />
+    </Suspense>
   );
 };
 

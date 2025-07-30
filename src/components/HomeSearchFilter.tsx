@@ -26,13 +26,36 @@ const HomeSearchFilter = () => {
                         console.warn('Rate limit exceeded. Using fallback filter options.');
                         // Set basic fallback options for filters
                         setFilterOptions({
-                            levels: ['Bachelor', 'Master', 'PhD', 'Postdoc'],
-                            countries: ['Canada', 'USA', 'UK', 'Australia', 'Germany'],
-                            fields_of_study: ['Engineering', 'Computer Science', 'Business', 'Medicine', 'Arts'],
-                            fund_types: ['Full Funding', 'Partial Funding', 'Tuition Only'],
-                            sponsor_types: ['Government', 'University', 'Private', 'Foundation'],
-                            scholarship_categories: ['Merit-based', 'Need-based', 'Research'],
-                            language_requirements: ['English', 'French', 'German', 'Spanish']
+                            levels: [
+                                { id: 1, name: 'Bachelor' },
+                                { id: 2, name: 'Master' },
+                                { id: 3, name: 'PhD' },
+                                { id: 4, name: 'Postdoc' }
+                            ],
+                            countries: [
+                                { id: 1, name: 'Canada' },
+                                { id: 2, name: 'USA' },
+                                { id: 3, name: 'UK' },
+                                { id: 4, name: 'Australia' },
+                                { id: 5, name: 'Germany' }
+                            ],
+                            fields_of_study: [
+                                { id: 1, name: 'Engineering' },
+                                { id: 2, name: 'Computer Science' },
+                                { id: 3, name: 'Business' },
+                                { id: 4, name: 'Medicine' },
+                                { id: 5, name: 'Arts' }
+                            ],
+                            fund_types: [
+                                { id: 1, name: 'Full Funding' },
+                                { id: 2, name: 'Partial Funding' },
+                                { id: 3, name: 'Tuition Only' }
+                            ],
+                            categories: [
+                                { id: 1, name: 'Merit-based' },
+                                { id: 2, name: 'Need-based' },
+                                { id: 3, name: 'Research' }
+                            ]
                         });
                         return;
                     }
@@ -46,13 +69,36 @@ const HomeSearchFilter = () => {
                 console.error('Error fetching filter options:', error);
                 // Set basic fallback options on any error
                 setFilterOptions({
-                    levels: ['Bachelor', 'Master', 'PhD', 'Postdoc'],
-                    countries: ['Canada', 'USA', 'UK', 'Australia', 'Germany'],
-                    fields_of_study: ['Engineering', 'Computer Science', 'Business', 'Medicine', 'Arts'],
-                    fund_types: ['Full Funding', 'Partial Funding', 'Tuition Only'],
-                    sponsor_types: ['Government', 'University', 'Private', 'Foundation'],
-                    scholarship_categories: ['Merit-based', 'Need-based', 'Research'],
-                    language_requirements: ['English', 'French', 'German', 'Spanish']
+                    levels: [
+                        { id: 1, name: 'Bachelor' },
+                        { id: 2, name: 'Master' },
+                        { id: 3, name: 'PhD' },
+                        { id: 4, name: 'Postdoc' }
+                    ],
+                    countries: [
+                        { id: 1, name: 'Canada' },
+                        { id: 2, name: 'USA' },
+                        { id: 3, name: 'UK' },
+                        { id: 4, name: 'Australia' },
+                        { id: 5, name: 'Germany' }
+                    ],
+                    fields_of_study: [
+                        { id: 1, name: 'Engineering' },
+                        { id: 2, name: 'Computer Science' },
+                        { id: 3, name: 'Business' },
+                        { id: 4, name: 'Medicine' },
+                        { id: 5, name: 'Arts' }
+                    ],
+                    fund_types: [
+                        { id: 1, name: 'Full Funding' },
+                        { id: 2, name: 'Partial Funding' },
+                        { id: 3, name: 'Tuition Only' }
+                    ],
+                    categories: [
+                        { id: 1, name: 'Merit-based' },
+                        { id: 2, name: 'Need-based' },
+                        { id: 3, name: 'Research' }
+                    ]
                 });
             } finally {
                 setFilterOptionsLoading(false);
